@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 import useAuth from "../hooks/useAuth";
@@ -13,8 +14,13 @@ function Home() {
     navigate("/login");
   };
 
+  useEffect(() => {
+    if (user === null) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
   if (user === null) {
-    navigate("/login");
     return null;
   }
 
