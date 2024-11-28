@@ -16,33 +16,38 @@ function Login() {
   };
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl">Iniciar Sesión</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col">
-        <input
-          type="email"
-          placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2"
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border p-2"
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2">
-          Iniciar Sesión
-        </button>
-      </form>
-      <p>
-        ¿No tienes una cuenta?{" "}
-        <Link to="/register" className="text-blue-500">
-          Regístrate
-        </Link>
-      </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Iniciar Sesión</h1>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200"
+          >
+            Iniciar Sesión
+          </button>
+        </form>
+        <p className="mt-6 text-center text-gray-600">
+          ¿No tienes una cuenta?{" "}
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Regístrate
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
