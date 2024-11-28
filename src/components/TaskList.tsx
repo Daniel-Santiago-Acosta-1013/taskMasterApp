@@ -21,7 +21,7 @@ function TaskList() {
   }
 
   return (
-    <div>
+    <div className="mt-4">
       {tasks.map((task: Task) => (
         <TaskItem key={task.id} task={task} />
       ))}
