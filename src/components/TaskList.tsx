@@ -8,13 +8,17 @@ import { RootState, AppDispatch } from "../store";
 function TaskList() {
   const tasks = useSelector((state: RootState) => state.tasks.tasks);
   const dispatch = useDispatch<AppDispatch>();
-  const user = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     if (user) {
       dispatch(fetchTasksAsync(user.uid));
     }
   }, [user, dispatch]);
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div>

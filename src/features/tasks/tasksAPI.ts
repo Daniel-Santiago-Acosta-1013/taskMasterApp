@@ -14,9 +14,10 @@ import { Task } from "./tasksSlice";
 export const fetchTasks = async (userId: string): Promise<Task[]> => {
   const q = query(collection(db, "tasks"), where("userId", "==", userId));
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(
-    (docSnap) => ({ id: docSnap.id, ...(docSnap.data() as Omit<Task, "id">) })
-  );
+  return querySnapshot.docs.map((docSnap) => ({
+    id: docSnap.id,
+    ...(docSnap.data() as Omit<Task, "id">),
+  }));
 };
 
 export const addTask = async (task: Omit<Task, "id">): Promise<Task> => {
@@ -26,7 +27,7 @@ export const addTask = async (task: Omit<Task, "id">): Promise<Task> => {
 
 export const updateTask = async (task: Task): Promise<void> => {
   const docRef = doc(db, "tasks", task.id);
-  const taskData = (({...rest }) => rest)(task);
+  const { id, ...taskData } = task;
   await updateDoc(docRef, taskData);
 };
 

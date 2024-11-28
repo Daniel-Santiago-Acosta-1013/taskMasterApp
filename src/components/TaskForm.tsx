@@ -7,7 +7,7 @@ import { AppDispatch } from "../store";
 function TaskForm() {
   const [title, setTitle] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const user = useAuth();
+  const { user, loading } = useAuth();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -20,8 +20,14 @@ function TaskForm() {
         })
       );
       setTitle("");
+    } else {
+      console.error("Usuario no autenticado");
     }
   };
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="flex">
