@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction, isAnyOf } from "@reduxjs/toolkit";
 import { fetchTasks, addTask, updateTask, deleteTask } from "./tasksAPI";
 
 export interface Task {
@@ -65,27 +65,45 @@ const tasksSlice = createSlice({
       .addCase(fetchTasksAsync.fulfilled, (state, action: PayloadAction<Task[]>) => {
         state.tasks = action.payload;
         state.status = "succeeded";
+        state.error = null;
       })
       .addCase(addTaskAsync.fulfilled, (state, action: PayloadAction<Task>) => {
         state.tasks.push(action.payload);
+        state.status = "succeeded";
+        state.error = null;
       })
       .addCase(updateTaskAsync.fulfilled, (state, action: PayloadAction<Task>) => {
         const index = state.tasks.findIndex((task) => task.id === action.payload.id);
         if (index >= 0) {
           state.tasks[index] = action.payload;
         }
+        state.status = "succeeded";
+        state.error = null;
       })
       .addCase(deleteTaskAsync.fulfilled, (state, action: PayloadAction<string>) => {
         state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+        state.status = "succeeded";
+        state.error = null;
       })
       .addMatcher(
-        (action) => action.type.startsWith("tasks/") && action.type.endsWith("/pending"),
+        isAnyOf(
+          fetchTasksAsync.pending,
+          addTaskAsync.pending,
+          updateTaskAsync.pending,
+          deleteTaskAsync.pending
+        ),
         (state) => {
           state.status = "loading";
+          state.error = null;
         }
       )
       .addMatcher(
-        (action) => action.type.startsWith("tasks/") && action.type.endsWith("/rejected"),
+        isAnyOf(
+          fetchTasksAsync.rejected,
+          addTaskAsync.rejected,
+          updateTaskAsync.rejected,
+          deleteTaskAsync.rejected
+        ),
         (state, action) => {
           state.status = "failed";
           state.error = action.error.message || "Algo salió mal";
