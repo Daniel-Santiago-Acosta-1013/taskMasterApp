@@ -57,9 +57,7 @@ export const deleteTaskAsync = createAsyncThunk<string, string>(
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
-  reducers: {
-    // Reducers síncronos si los necesitas
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchTasksAsync.fulfilled, (state, action: PayloadAction<Task[]>) => {
