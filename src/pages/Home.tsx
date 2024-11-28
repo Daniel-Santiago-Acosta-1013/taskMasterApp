@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig";
 
 function Home() {
-  const user = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -15,10 +15,14 @@ function Home() {
   };
 
   useEffect(() => {
-    if (user === null) {
+    if (!loading && user === null) {
       navigate("/login");
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   if (user === null) {
     return null;

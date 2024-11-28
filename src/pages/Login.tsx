@@ -1,14 +1,22 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import useAuth from "../hooks/useAuth";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/");
+    }
+  }, [user, loading, navigate]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -20,7 +28,6 @@ function Login() {
           showConfirmButton: false,
           timer: 1500,
         });
-        navigate("/");
       })
       .catch((error) => {
         console.error(error);
@@ -31,6 +38,14 @@ function Login() {
         });
       });
   };
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
