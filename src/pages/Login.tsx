@@ -4,11 +4,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAuth from "../hooks/useAuth";
+import { ClipLoader } from "react-spinners";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { user, loading } = useAuth();
 
@@ -20,8 +22,10 @@ function Login() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
+        setIsSubmitting(false);
         Swal.fire({
           icon: "success",
           title: "Inicio de sesión exitoso",
@@ -30,6 +34,7 @@ function Login() {
         });
       })
       .catch((error) => {
+        setIsSubmitting(false);
         console.error(error);
         Swal.fire({
           icon: "error",
@@ -40,7 +45,11 @@ function Login() {
   };
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader size={50} color={"#123abc"} loading={true} />
+      </div>
+    );
   }
 
   if (user) {
@@ -60,6 +69,7 @@ function Login() {
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitting}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -69,6 +79,7 @@ function Login() {
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isSubmitting}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
             />
             <div
@@ -118,9 +129,14 @@ function Login() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200"
+            disabled={isSubmitting}
+            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200 flex items-center justify-center"
           >
-            Iniciar Sesión
+            {isSubmitting ? (
+              <ClipLoader size={20} color={"#fff"} loading={true} />
+            ) : (
+              "Iniciar Sesión"
+            )}
           </button>
         </form>
         <p className="mt-6 text-center text-gray-600">
