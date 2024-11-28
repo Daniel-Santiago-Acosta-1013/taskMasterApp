@@ -3,6 +3,7 @@ import { auth } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { ClipLoader } from "react-spinners";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e: FormEvent) => {
@@ -24,8 +26,11 @@ function Register() {
       return;
     }
 
+    setIsSubmitting(true);
+
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
+        setIsSubmitting(false);
         Swal.fire({
           icon: "success",
           title: "Registro exitoso",
@@ -35,6 +40,7 @@ function Register() {
         navigate("/");
       })
       .catch((error) => {
+        setIsSubmitting(false);
         console.error(error);
         Swal.fire({
           icon: "error",
@@ -57,6 +63,7 @@ function Register() {
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitting}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -66,6 +73,7 @@ function Register() {
               placeholder="Contraseña"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isSubmitting}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
             />
             <div
@@ -119,6 +127,7 @@ function Register() {
               placeholder="Confirmar Contraseña"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={isSubmitting}
               className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:border-blue-500"
             />
             <div
@@ -168,9 +177,14 @@ function Register() {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200"
+            disabled={isSubmitting}
+            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200 flex items-center justify-center"
           >
-            Registrarse
+            {isSubmitting ? (
+              <ClipLoader size={20} color={"#fff"} loading={true} />
+            ) : (
+              "Registrarse"
+            )}
           </button>
         </form>
         <p className="mt-6 text-center text-gray-600">
